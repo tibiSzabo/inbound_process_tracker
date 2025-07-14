@@ -1,0 +1,58 @@
+import { InboundItem, InboundItemStage } from 'src/types/inbound-item';
+import { Button, Collapse, IconButton, Stack, TableCell, TableRow } from '@mui/material';
+import { enumToReadable } from 'src/utils/enumToReadable';
+import { StageTracker } from 'src/components/InboundItemRow/StageTracker/StageTracker';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
+interface InboundItemsProps {
+  item: InboundItem;
+  onItemTransition: (id: number) => void;
+  isOpen: boolean;
+  onOpen: (id: number) => void;
+}
+
+export const InboundItemRow = ({ item, onItemTransition, isOpen, onOpen }: InboundItemsProps) => {
+  const { item: itemName, supplier, stage, expectedDate } = item;
+
+  return (
+    <>
+      <TableRow sx={{ cursor: 'pointer' }} onClick={() => onOpen(item.id)}>
+        <TableCell>{isOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}</TableCell>
+        <TableCell>{itemName}</TableCell>
+        <TableCell>{supplier}</TableCell>
+        <TableCell>{enumToReadable(stage)}</TableCell>
+        <TableCell>{expectedDate}</TableCell>
+        <TableCell>
+          <IconButton>
+            <MoreVertIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={isOpen} timeout="auto" unmountOnExit>
+            <Stack gap="12px" direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
+              <StageTracker itemStage={item.stage} />
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ flexGrow: 1 }}
+              >
+                <Button
+                  color="info"
+                  variant="outlined"
+                  disabled={stage === InboundItemStage.STORED}
+                >
+                  Next Stage
+                </Button>
+              </Stack>
+            </Stack>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </>
+  );
+};

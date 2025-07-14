@@ -1,10 +1,10 @@
 import './App.css';
-import { InboundList } from 'src/components/InbountList/InboundList';
+import { InboundTable } from 'src/components/InboundTable/InboundTable';
 
 function App() {
   return (
     <div className="App">
-      <InboundList />
+      <InboundTable />
     </div>
   );
 }

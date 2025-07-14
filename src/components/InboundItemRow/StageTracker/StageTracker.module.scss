@@ -1,0 +1,13 @@
+.StageList {
+  margin: 12px;
+  background: rgba(129, 131, 229, 0.13);
+  border-radius: 8px;
+  justify-content: space-between;
+  gap: 20px;
+
+  .StageItem {
+    padding: 6px 12px;
+    align-items: center;
+    gap: 8px;
+  }
+}

@@ -1,39 +1,38 @@
-import { Process, ProcessStage } from 'src/types/process';
-
-export const MOCK_PROCESSES: Process[] = [
+import { InboundItem, InboundItemStage } from 'src/types/inbound-item';
+export const MOCK_INBOUND_ITEMS: InboundItem[] = [
   {
     id: 1,
     item: 'Item A',
     supplier: 'Supplier X',
-    stage: ProcessStage.CREATEAD,
+    stage: InboundItemStage.CREATEAD,
     expectedDate: '2023-10-01',
   },
   {
     id: 2,
     item: 'Item B',
     supplier: 'Supplier Y',
-    stage: ProcessStage.IN_TRANSIT,
+    stage: InboundItemStage.IN_TRANSIT,
     expectedDate: '2023-10-05',
   },
   {
     id: 3,
     item: 'Item C',
     supplier: 'Supplier Z',
-    stage: ProcessStage.ARRIVED,
+    stage: InboundItemStage.ARRIVED,
     expectedDate: '2023-10-10',
   },
   {
     id: 4,
     item: 'Item D',
     supplier: 'Supplier X',
-    stage: ProcessStage.INSPECTED,
+    stage: InboundItemStage.INSPECTED,
     expectedDate: '2023-10-15',
   },
   {
     id: 5,
     item: 'Item E',
     supplier: 'Supplier Y',
-    stage: ProcessStage.STORED,
+    stage: InboundItemStage.STORED,
     expectedDate: '2023-10-20',
   },
 ];
