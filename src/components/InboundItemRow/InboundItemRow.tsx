@@ -1,5 +1,14 @@
+import React from 'react';
 import { InboundItem, InboundItemStage } from 'src/types/inbound-item';
-import { Button, Collapse, IconButton, Stack, TableCell, TableRow } from '@mui/material';
+import {
+  Button,
+  CircularProgress,
+  Collapse,
+  IconButton,
+  Stack,
+  TableCell,
+  TableRow,
+} from '@mui/material';
 import { enumToReadable } from 'src/utils/enumToReadable';
 import { StageTracker } from 'src/components/InboundItemRow/StageTracker/StageTracker';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -10,11 +19,23 @@ interface InboundItemsProps {
   item: InboundItem;
   onItemTransition: (id: number) => void;
   isOpen: boolean;
+  isLoading: boolean;
   onOpen: (id: number) => void;
 }
 
-export const InboundItemRow = ({ item, onItemTransition, isOpen, onOpen }: InboundItemsProps) => {
+export const InboundItemRow = ({
+  item,
+  onItemTransition,
+  isOpen,
+  isLoading,
+  onOpen,
+}: InboundItemsProps) => {
   const { item: itemName, supplier, stage, expectedDate } = item;
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation(); // Prevent the row click event
+    console.log('More options clicked for item:', itemName); // TODO
+  };
 
   return (
     <>
@@ -25,7 +46,7 @@ export const InboundItemRow = ({ item, onItemTransition, isOpen, onOpen }: Inbou
         <TableCell>{enumToReadable(stage)}</TableCell>
         <TableCell>{expectedDate}</TableCell>
         <TableCell>
-          <IconButton>
+          <IconButton onClick={(e) => handleMenuClick(e)} aria-label="more options">
             <MoreVertIcon />
           </IconButton>
         </TableCell>
@@ -44,9 +65,15 @@ export const InboundItemRow = ({ item, onItemTransition, isOpen, onOpen }: Inbou
                 <Button
                   color="info"
                   variant="outlined"
-                  disabled={stage === InboundItemStage.STORED}
+                  disabled={stage === InboundItemStage.STORED || isLoading}
+                  onClick={() => onItemTransition(item.id)}
+                  sx={{
+                    width: 'fit-content',
+                    minWidth: '120px',
+                    height: '36px',
+                  }}
                 >
-                  Next Stage
+                  {isLoading ? <CircularProgress size={24} /> : 'Next Stage'}
                 </Button>
               </Stack>
             </Stack>

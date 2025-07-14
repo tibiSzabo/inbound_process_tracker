@@ -12,14 +12,38 @@ import {
 import { useInboundItems } from 'src/hooks/useInboundItems';
 import InboundListPlaceholder from 'src/components/InboundListPlaceholder/InboundListPlaceholder';
 import { InboundItemRow } from 'src/components/InboundItemRow/InboundItemRow';
+import { FilterBar } from 'src/components/FilterBar/FilterBar';
+import { InboundItemFilter } from 'src/types/inbound-item';
 
 export const InboundTable = () => {
-  const { isLoading, inboundItems, transitionInboundItem } = useInboundItems();
+  const [filterValue, setFilterValue] = useState<InboundItemFilter>('ALL');
+  const { isLoading, inboundItems, transitionInboundItem } = useInboundItems(filterValue);
   const [openRowId, setOpenRowId] = useState<number | null>(null);
+  const [loadingRowId, setLoadingRowId] = useState<number | null>(null);
+
+  const handleStageTransition = (id: number) => {
+    setLoadingRowId(id);
+    transitionInboundItem(id).then(() => {
+      setLoadingRowId(null);
+    });
+  };
+
+  const handleOpenRow = (id: number) => {
+    setOpenRowId((prevState) => {
+      if (id === prevState) return null;
+      return id;
+    });
+  };
+
+  const handleFilterChange = (filterValue: InboundItemFilter) => {
+    setFilterValue(filterValue);
+    setOpenRowId(null);
+    setLoadingRowId(null);
+  };
 
   return (
-    <Stack>
-      <h2>Inbound List</h2>
+    <Stack gap={2}>
+      <FilterBar filterValue={filterValue} onFilterChange={handleFilterChange} />
       <TableContainer component={Paper} sx={{ maxWidth: '1000px' }}>
         <Table>
           <TableHead>
@@ -40,9 +64,10 @@ export const InboundTable = () => {
                 <InboundItemRow
                   key={item.id}
                   item={item}
-                  onItemTransition={transitionInboundItem}
+                  onItemTransition={handleStageTransition}
                   isOpen={openRowId === item.id}
-                  onOpen={setOpenRowId}
+                  onOpen={handleOpenRow}
+                  isLoading={loadingRowId === item.id}
                 />
               ))}
           </TableBody>

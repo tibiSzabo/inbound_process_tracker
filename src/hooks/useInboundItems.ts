@@ -1,43 +1,77 @@
 import { useEffect, useState } from 'react';
 import { PROCESS_STAGES_IN_ORDER } from 'src/constants/inbound-items';
 import { MOCK_INBOUND_ITEMS } from 'src/mock/inbound-items';
+import { InboundItemFilter } from 'src/types/inbound-item';
 
-export const useInboundItems = () => {
+export const useInboundItems = (filter: InboundItemFilter) => {
   const [inboundItems, setInboundItems] = useState(MOCK_INBOUND_ITEMS);
+  const [filteredInboundItems, setFilteredInboundItems] = useState(MOCK_INBOUND_ITEMS);
   const [isLoading, setIsLoading] = useState(false);
 
   // simulate fetching and loading
   useEffect(() => {
-    fetchInboundItems().then();
+    fetchInboundItems();
   }, []);
 
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      filterItems();
+      setIsLoading(false);
+    }, 1500);
+  }, [filter]);
+
+  useEffect(() => {
+    filterItems();
+  }, [inboundItems]);
+
+  const filterItems = () => {
+    if (filter === 'ALL') {
+      setFilteredInboundItems(inboundItems);
+    } else {
+      const filteredItems = inboundItems.filter((item) => item.stage === filter);
+      setFilteredInboundItems(filteredItems);
+    }
+  };
+
   const fetchInboundItems = () => {
-    return new Promise((resolve) => {
-      setIsLoading(true);
-      setTimeout(() => {
-        resolve(MOCK_INBOUND_ITEMS);
-        setInboundItems(MOCK_INBOUND_ITEMS);
-        setIsLoading(false);
-      }, 2000);
-    });
+    setIsLoading(true);
+    setTimeout(() => {
+      const filteredItems = MOCK_INBOUND_ITEMS.filter((item) => {
+        if (filter === 'ALL') return true;
+        return item.stage === filter;
+      });
+      setInboundItems(filteredItems);
+      setFilteredInboundItems(filteredItems);
+      setIsLoading(false);
+    }, 2000);
   };
 
   const transitionInboundItem = (id: number) => {
-    MOCK_INBOUND_ITEMS.map((process) => {
-      if (process.id === id) {
-        const currentStageIndex = PROCESS_STAGES_IN_ORDER.indexOf(process.stage);
-        if (currentStageIndex < PROCESS_STAGES_IN_ORDER.length - 1) {
-          process.stage = PROCESS_STAGES_IN_ORDER[currentStageIndex + 1];
-        }
-      }
-      return process;
+    return new Promise((resolve) => {
+      // simulate a delay for the transition
+      setTimeout(() => {
+        setInboundItems((prevItems) => {
+          const itemIndex = prevItems.findIndex((item) => item.id === id);
+          if (itemIndex !== -1) {
+            const currentStageIndex = PROCESS_STAGES_IN_ORDER.indexOf(prevItems[itemIndex].stage);
+            if (currentStageIndex < PROCESS_STAGES_IN_ORDER.length - 1) {
+              const nextStage = PROCESS_STAGES_IN_ORDER[currentStageIndex + 1];
+              const updatedItem = { ...prevItems[itemIndex], stage: nextStage };
+              const updatedItems = [...prevItems];
+              updatedItems[itemIndex] = updatedItem;
+              return updatedItems;
+            }
+          }
+          return prevItems;
+        });
+        resolve(true);
+      }, 1000);
     });
-    setInboundItems([...MOCK_INBOUND_ITEMS]);
-    fetchInboundItems().then();
   };
 
   return {
-    inboundItems,
+    inboundItems: filteredInboundItems,
     isLoading,
     fetchInboundItems,
     transitionInboundItem,

@@ -13,3 +13,5 @@ export enum InboundItemStage {
   INSPECTED = 'INSPECTED',
   STORED = 'STORED',
 }
+
+export type InboundItemFilter = InboundItemStage | 'ALL';
