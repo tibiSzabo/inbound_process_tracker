@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { InboundItemFilter } from 'src/types/inbound-item';
 import { PROCESS_STAGES_IN_ORDER } from 'src/constants/inbound-items';
