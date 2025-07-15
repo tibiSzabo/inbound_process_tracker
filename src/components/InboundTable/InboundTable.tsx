@@ -14,12 +14,14 @@ import InboundListPlaceholder from 'src/components/InboundListPlaceholder/Inboun
 import { InboundItemRow } from 'src/components/InboundItemRow/InboundItemRow';
 import { FilterBar } from 'src/components/FilterBar/FilterBar';
 import { InboundItemFilter } from 'src/types/inbound-item';
+import { CustomModal } from 'src/components/CustomModal/CustomModal';
 
 export const InboundTable = () => {
   const [filterValue, setFilterValue] = useState<InboundItemFilter>('ALL');
   const { isLoading, inboundItems, transitionInboundItem } = useInboundItems(filterValue);
   const [openRowId, setOpenRowId] = useState<number | null>(null);
   const [loadingRowId, setLoadingRowId] = useState<number | null>(null);
+  const [isOperationsModalOpen, setIsOperationsModalOpen] = useState(false);
 
   const handleStageTransition = (id: number) => {
     setLoadingRowId(id);
@@ -39,6 +41,14 @@ export const InboundTable = () => {
     setFilterValue(filterValue);
     setOpenRowId(null);
     setLoadingRowId(null);
+  };
+
+  const handleOptionsModalOpen = (id: number) => {
+    setIsOperationsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsOperationsModalOpen(false);
   };
 
   return (
@@ -68,11 +78,18 @@ export const InboundTable = () => {
                   isOpen={openRowId === item.id}
                   onOpen={handleOpenRow}
                   isLoading={loadingRowId === item.id}
+                  onItemOptionsOpen={handleOptionsModalOpen}
                 />
               ))}
           </TableBody>
         </Table>
       </TableContainer>
+
+      <CustomModal
+        open={isOperationsModalOpen}
+        handleClose={handleModalClose}
+        title="Inbound Operations"
+      ></CustomModal>
     </Stack>
   );
 };

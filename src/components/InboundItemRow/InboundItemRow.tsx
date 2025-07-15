@@ -21,6 +21,7 @@ interface InboundItemsProps {
   isOpen: boolean;
   isLoading: boolean;
   onOpen: (id: number) => void;
+  onItemOptionsOpen: (id: number) => void;
 }
 
 export const InboundItemRow = ({
@@ -29,12 +30,13 @@ export const InboundItemRow = ({
   isOpen,
   isLoading,
   onOpen,
+  onItemOptionsOpen,
 }: InboundItemsProps) => {
   const { item: itemName, supplier, stage, expectedDate } = item;
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation(); // Prevent the row click event
-    console.log('More options clicked for item:', itemName); // TODO
+    onItemOptionsOpen(item.id);
   };
 
   return (
