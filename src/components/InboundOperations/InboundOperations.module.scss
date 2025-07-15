@@ -1,0 +1,24 @@
+.OperationsContainer {
+  gap: 20px;
+
+  .ItemDetails {
+    gap: 10px;
+    border-radius: 4px;
+    padding: 10px;
+
+    .ItemDetail {
+      flex-direction: row;
+
+      .ItemDetailTitle {
+        font-weight: bold;
+        width: 30%;
+      }
+
+      .ItemDetailValue {
+        color: #555;
+        text-indent: 15px;
+      }
+    }
+  }
+
+}

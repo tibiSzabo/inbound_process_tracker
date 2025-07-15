@@ -13,8 +13,9 @@ import { useInboundItems } from 'src/hooks/useInboundItems';
 import InboundListPlaceholder from 'src/components/InboundListPlaceholder/InboundListPlaceholder';
 import { InboundItemRow } from 'src/components/InboundItemRow/InboundItemRow';
 import { FilterBar } from 'src/components/FilterBar/FilterBar';
-import { InboundItemFilter } from 'src/types/inbound-item';
+import { InboundItem, InboundItemFilter } from 'src/types/inbound-item';
 import { CustomModal } from 'src/components/CustomModal/CustomModal';
+import { InboundOperations } from 'src/components/InboundOperations/InboundOperations';
 
 export const InboundTable = () => {
   const [filterValue, setFilterValue] = useState<InboundItemFilter>('ALL');
@@ -22,6 +23,7 @@ export const InboundTable = () => {
   const [openRowId, setOpenRowId] = useState<number | null>(null);
   const [loadingRowId, setLoadingRowId] = useState<number | null>(null);
   const [isOperationsModalOpen, setIsOperationsModalOpen] = useState(false);
+  const [itemUnderOperations, setItemUnderOperations] = useState<null | InboundItem>(null);
 
   const handleStageTransition = (id: number) => {
     setLoadingRowId(id);
@@ -45,10 +47,13 @@ export const InboundTable = () => {
 
   const handleOptionsModalOpen = (id: number) => {
     setIsOperationsModalOpen(true);
+    const item = inboundItems.find((item) => item.id === id) || null;
+    setItemUnderOperations(item);
   };
 
   const handleModalClose = () => {
     setIsOperationsModalOpen(false);
+    setItemUnderOperations(null);
   };
 
   return (
@@ -89,7 +94,9 @@ export const InboundTable = () => {
         open={isOperationsModalOpen}
         handleClose={handleModalClose}
         title="Inbound Operations"
-      ></CustomModal>
+      >
+        <InboundOperations item={itemUnderOperations} />
+      </CustomModal>
     </Stack>
   );
 };
